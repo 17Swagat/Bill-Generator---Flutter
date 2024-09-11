@@ -38,6 +38,7 @@ dependencies:
   pdf: ^3.11.1
   path_provider: ^2.1.4
   # open_document: ^1.0.7
+  open_file: ^3.3.2
   google_fonts: ^6.2.1
 
 dev_dependencies:
