@@ -2,6 +2,10 @@
 
 A new Flutter project.
 
+## Me
+
+[Developing] A bill generator app.
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
