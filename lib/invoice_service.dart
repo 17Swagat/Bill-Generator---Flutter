@@ -113,6 +113,106 @@ class PdfInvoiceService {
     // TODO 17: Save the PDF and return the Uint8List
   }
 
+  Future<Uint8List> createInvoice_2(List<Product> soldProducts) async {
+  final pdf = pw.Document();
+  final image = (await rootBundle.load('images/on_pdf/pdf_logo.jpg'))
+      .buffer
+      .asUint8List();
+
+  pdf.addPage(
+    pw.Page(
+      pageFormat: PdfPageFormat.a4,
+      build: (context) => pw.Column(
+        children: [
+          pw.Image(
+            pw.MemoryImage(image),
+            width: 150,
+            height: 150,
+            fit: pw.BoxFit.cover,
+          ),
+          pw.SizedBox(height: 20),
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Text('Customer Name'),
+                  pw.Text('Customer Address'),
+                  pw.Text('Customer City'),
+                ],
+              ),
+              pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.end,
+                children: [
+                  pw.Text('Max Weber'),
+                  pw.Text('Weird Street Name 1'),
+                  pw.Text('70702 Not my city'),
+                  pw.Text('Invoice-Nr: 0001'),
+                ],
+              ),
+            ],
+          ),
+          pw.SizedBox(height: 20),
+          pw.Table(
+            border: pw.TableBorder.all(),
+            children: [
+              pw.TableRow(
+                children: [
+                  pw.Text('Item Name'),
+                  pw.Text('Item Price'),
+                  pw.Text('Amount'),
+                  pw.Text('Total'),
+                  pw.Text('Vat'),
+                ],
+              ),
+              for (var product in soldProducts)
+                pw.TableRow(
+                  children: [
+                    pw.Text(product.name),
+                    pw.Text(product.price.toStringAsFixed(2)),
+                    pw.Text(product.amount.toStringAsFixed(2)),
+                    pw.Text((product.price * product.amount).toStringAsFixed(2)),
+                    pw.Text((product.price / 100 * product.vatInPercent).toStringAsFixed(2)),
+                  ],
+                ),
+              pw.TableRow(
+                children: [
+                  pw.Text("Sub Total", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                  pw.Text(""),
+                  pw.Text(""),
+                  pw.Text(""),
+                  pw.Text("Rs ${getVatTotal(soldProducts)}"),
+                ],
+              ),
+              pw.TableRow(
+                children: [
+                  pw.Text("VAT Total", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                  pw.Text(""),
+                  pw.Text(""),
+                  pw.Text(""),
+                  pw.Text("Rs ${getVatTotal(soldProducts)}"),
+                ],
+              ),
+              pw.TableRow(
+                children: [
+                  pw.Text("Total", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                  pw.Text(""),
+                  pw.Text(""),
+                  pw.Text(""),
+                  pw.Text("Rs ${getVatTotal(soldProducts)}"),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+
+  return pdf.save();
+}
+
   Future<void> savePdfFile(String fileName, Uint8List byteList) async {
     // @new:
     // throw UnimplementedError();
